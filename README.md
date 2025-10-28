@@ -24,6 +24,9 @@
 - ubuntu docker + docker-compose 설치 스크립트
 ```bash
     wget https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/ubuntu/001-install-docker-and-docker-compose-and-etc.sh
+
+    #설치 안받고 바로 실행
+    curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/ubuntu/001-install-docker-and-docker-compose-and-etc.sh | bash
 ```
 
 - debian docker-compose 설치 스크립트
