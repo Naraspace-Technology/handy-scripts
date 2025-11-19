@@ -39,3 +39,11 @@ sudo apt install -y net-tools iputils-ping iproute2 git wget vim make
 # git-cli 설치
 ############################################
 sudo  apt install -y gh
+
+
+############################################
+# KST 시간대 설정
+############################################
+ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime;
+echo "Asia/Seoul" > /etc/timezone;
+date;
