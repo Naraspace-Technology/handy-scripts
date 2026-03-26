@@ -52,7 +52,7 @@ need_linux() {
 ##############################################
 # Usage
 ##############################################
-usage() {
+usage_text() {
     cat <<'HELP'
 scmd - Simple Command (자주 쓰지만 기억하기 어려운 명령어 모음)
 
@@ -123,6 +123,15 @@ Usage: scmd <command> [args...]
   -v, --verbose         상세 출력 모드
   -h, --help            이 도움말 표시
 HELP
+}
+
+usage() {
+    # 터미널이면 pager로, 파이프면 그냥 출력
+    if [ -t 1 ] && command -v less &>/dev/null; then
+        usage_text | less -R
+    else
+        usage_text
+    fi
     exit 0
 }
 
