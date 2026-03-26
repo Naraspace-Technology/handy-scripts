@@ -50,6 +50,11 @@ curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/
 - OS 자동 감지 (Ubuntu, Debian, macOS) 후 해당 OS에 맞는 명령어로 실행
 - 30개+ 명령어 지원: 시스템 정보, 네트워크, 프로세스, Docker, 서비스 관리, 파일 검색, Git 등
 - 사용법: `scmd --help`
+- 업데이트: `scmd update` (자동 버전 비교) 또는 `scmd update --force` (강제)
+- 수동 업데이트 (구버전 scmd를 사용 중이라면):
+```bash
+sudo curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/scmd.sh -o /usr/local/bin/scmd && sudo chmod 755 /usr/local/bin/scmd
+```
 
 
 ## 3. 지원 OS
