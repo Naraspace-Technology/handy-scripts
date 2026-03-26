@@ -117,7 +117,7 @@ Usage: scmd <command> [args...]
 
 [Update]
   version               현재 scmd 버전(날짜) 표시
-  update                최신 버전 확인 후 업데이트
+  update [--force]      최신 버전 확인 후 업데이트 (--force: 강제 재설치)
 
 [Options]
   -v, --verbose         상세 출력 모드
@@ -486,6 +486,11 @@ cmd_version() {
 }
 
 cmd_update() {
+    local force=false
+    if [[ "$1" == "--force" || "$1" == "-f" ]]; then
+        force=true
+    fi
+
     section "scmd update"
     echo "Current version : $SCMD_VERSION"
 
@@ -512,10 +517,15 @@ cmd_update() {
 
     echo "Latest version  : $remote_version"
 
-    # 날짜 비교 (YYYY-MM-DD 형식이므로 문자열 비교로 충분)
-    if [[ "$remote_version" > "$SCMD_VERSION" ]]; then
-        echo ""
-        echo "New version available! Updating..."
+    # 날짜 비교 (YYYY-MM-DD-HHmmss 형식이므로 문자열 비교로 충분)
+    if [[ "$force" == true || "$remote_version" > "$SCMD_VERSION" ]]; then
+        if [[ "$force" == true ]]; then
+            echo ""
+            echo "Force update..."
+        else
+            echo ""
+            echo "New version available! Updating..."
+        fi
 
         local install_path
         install_path=$(command -v scmd 2>/dev/null || echo "/usr/local/bin/scmd")
@@ -623,7 +633,7 @@ case "$COMMAND" in
 
     # Update
     version)         cmd_version ;;
-    update)          cmd_update ;;
+    update)          cmd_update "$@" ;;
 
     # Help
     --help|-h)       usage ;;
