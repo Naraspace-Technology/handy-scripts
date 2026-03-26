@@ -47,7 +47,8 @@ curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/
 ### scmd install (`--scmd`)
 
 - `scmd` 명령어를 `/usr/local/bin/scmd`에 설치
-- 포트 확인, 호스트 확인, git config 등 자주 쓰는 명령어 모음
+- OS 자동 감지 (Ubuntu, Debian, macOS) 후 해당 OS에 맞는 명령어로 실행
+- 30개+ 명령어 지원: 시스템 정보, 네트워크, 프로세스, Docker, 서비스 관리, 파일 검색, Git 등
 - 사용법: `scmd --help`
 
 
@@ -57,16 +58,12 @@ curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/
 - Debian (12+)
 
 
-## A. Legacy (개별 스크립트)
+## 4. 프로젝트 구조
 
-> `setup.sh` 통합 스크립트 사용을 권장합니다.
-
-- ubuntu docker + docker-compose 설치 스크립트
-```bash
-curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/ubuntu/001-install-docker-and-docker-compose-and-etc.sh | bash
 ```
-
-- debian docker-compose 설치 스크립트
-```bash
-curl -fsSL https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/debian/001-install-docker-compose-and-etc.sh | bash
+handy-scripts/
+├── setup.sh    # 통합 설치 스크립트 (Docker, Compose, Python3, scmd 등)
+├── scmd.sh     # 자주 쓰는 명령어 모음 (Simple Command)
+├── LICENSE
+└── README.md
 ```

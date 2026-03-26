@@ -10,7 +10,7 @@ set -e
 ############################################
 # Constants
 ############################################
-SCMD_RAW_URL="https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/ubuntu/scmd.sh"
+SCMD_RAW_URL="https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/scmd.sh"
 SCMD_INSTALL_PATH="/usr/local/bin/scmd"
 
 ############################################
