@@ -3,6 +3,12 @@
 # 자주 쓰지만 기억하기 어려운 Linux/macOS 명령어 모음
 
 ##############################################
+# Version Info
+##############################################
+SCMD_VERSION="2026-03-26"
+SCMD_REMOTE_URL="https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/scmd.sh"
+
+##############################################
 # OS Detection
 ##############################################
 OS_TYPE="unknown"
@@ -108,6 +114,10 @@ Usage: scmd <command> [args...]
   gen-password           랜덤 패스워드 생성                  (args: [LENGTH])
   encode-base64         Base64 인코딩                       (args: TEXT)
   decode-base64         Base64 디코딩                       (args: TEXT)
+
+[Update]
+  version               현재 scmd 버전(날짜) 표시
+  update                최신 버전 확인 후 업데이트
 
 [Options]
   -v, --verbose         상세 출력 모드
@@ -460,6 +470,63 @@ cmd_decode_base64() {
     echo ""
 }
 
+# --- Update ---
+
+cmd_version() {
+    echo "scmd version: $SCMD_VERSION"
+}
+
+cmd_update() {
+    section "scmd update"
+    echo "Current version : $SCMD_VERSION"
+
+    # 임시 파일에 먼저 다운로드
+    local tmp_file
+    tmp_file=$(mktemp /tmp/scmd-update.XXXXXX)
+
+    echo "Downloading latest version..."
+    if ! curl -fsSL "$SCMD_REMOTE_URL" -o "$tmp_file" 2>/dev/null; then
+        rm -f "$tmp_file"
+        echo "[ERROR] Download failed. Check network connection."
+        return 1
+    fi
+
+    # remote 파일에서 버전 파싱
+    local remote_version
+    remote_version=$(grep -m1 '^SCMD_VERSION=' "$tmp_file" | cut -d'"' -f2)
+
+    if [[ -z "$remote_version" ]]; then
+        rm -f "$tmp_file"
+        echo "[ERROR] Failed to parse remote version."
+        return 1
+    fi
+
+    echo "Latest version  : $remote_version"
+
+    # 날짜 비교 (YYYY-MM-DD 형식이므로 문자열 비교로 충분)
+    if [[ "$remote_version" > "$SCMD_VERSION" ]]; then
+        echo ""
+        echo "New version available! Updating..."
+
+        local install_path
+        install_path=$(command -v scmd 2>/dev/null || echo "/usr/local/bin/scmd")
+
+        if sudo cp "$tmp_file" "$install_path" && sudo chmod 755 "$install_path"; then
+            rm -f "$tmp_file"
+            echo "[OK] Updated: $SCMD_VERSION -> $remote_version"
+            echo "Run 'scmd version' to confirm."
+        else
+            rm -f "$tmp_file"
+            echo "[ERROR] Failed to install. Check permissions."
+            return 1
+        fi
+    else
+        rm -f "$tmp_file"
+        echo ""
+        echo "Already up to date."
+    fi
+}
+
 ##############################################
 # Parse global options first
 ##############################################
@@ -544,6 +611,10 @@ case "$COMMAND" in
     gen-password)    cmd_gen_password "$@" ;;
     encode-base64)   cmd_encode_base64 "$@" ;;
     decode-base64)   cmd_decode_base64 "$@" ;;
+
+    # Update
+    version)         cmd_version ;;
+    update)          cmd_update ;;
 
     # Help
     --help|-h)       usage ;;
