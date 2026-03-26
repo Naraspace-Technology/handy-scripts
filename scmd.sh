@@ -5,7 +5,7 @@
 ##############################################
 # Version Info
 ##############################################
-SCMD_VERSION="2026-03-26-190000"
+SCMD_VERSION="2026-03-26-160448"
 SCMD_REMOTE_URL="https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/scmd.sh"
 
 ##############################################
