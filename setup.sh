@@ -103,10 +103,12 @@ install_common_packages() {
         gh \
         python3 \
         python3-pip \
-        python3-venv
+        python3-venv \
+        python-is-python3
 
     info "Common packages installed."
-    info "Python: $(python3 --version)"
+    info "Python3: $(python3 --version)"
+    info "Python:  $(python --version)"
 }
 
 ############################################
