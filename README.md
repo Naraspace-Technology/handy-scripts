@@ -53,6 +53,9 @@ irm https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/he
 
 # 옵션: 공개 키 등록 + 원격 데스크톱 켜기 + 네트워크 프로필을 개인으로
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/setup-windows-ssh.ps1))) -PublicKey "ssh-ed25519 AAAA... user@host" -EnableRdp -SetPrivateNetwork
+
+# 문제 확인용: 실행 전체를 로그 파일로 남기기 (끝에 로그 경로를 표시)
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/heads/master/setup-windows-ssh.ps1))) -Log
 ```
 
 | 옵션 | 내용 |
@@ -61,6 +64,8 @@ irm https://raw.githubusercontent.com/Naraspace-Technology/handy-scripts/refs/he
 | `-EnableRdp` | 원격 데스크톱과 방화벽 규칙 켜기(Pro·Enterprise) |
 | `-SetPrivateNetwork` | 공용(Public) 네트워크 프로필을 개인(Private)으로 변경 |
 | `-DefaultShell` | `powershell`(기본) · `pwsh` · `cmd` · `keep` |
+| `-Log` | 실행 전체(출력·에러)를 `%TEMP%\setup-windows-ssh_<시각>.log`에 기록. 문제 확인용이며, 안 주면 로그를 남기지 않고 동작은 동일 |
+| `-LogFile "<경로>"` | 로그를 지정한 경로에 기록(`-Log` 포함) |
 
 - 마지막에 서비스 실행·22번 수신·방화벽·네트워크 프로필을 확인하고 `ssh <계정>@<IP>` 접속 명령을 보여 줌
 - 그래도 접속이 타임아웃이면 중간 망이나 하이퍼바이저(예: Proxmox) VM 방화벽을 확인

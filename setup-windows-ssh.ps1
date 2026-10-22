@@ -16,8 +16,11 @@
 #   -EnableRdp             Enable Remote Desktop and its firewall rules (Pro/Enterprise only)
 #   -SetPrivateNetwork     Change Public network profiles to Private
 #   -DefaultShell <name>   powershell (default) | pwsh | cmd | keep
+#   -Log                   Write a full transcript to %TEMP%\setup-windows-ssh_<timestamp>.log (for troubleshooting)
+#   -LogFile "<path>"      Write the transcript to an explicit path (implies -Log)
 #
 # Every step checks the current state first, so running it again is safe.
+# Without -Log / -LogFile nothing is logged: behavior is exactly the same.
 
 [CmdletBinding()]
 param(
@@ -25,7 +28,9 @@ param(
     [switch]$EnableRdp,
     [switch]$SetPrivateNetwork,
     [ValidateSet("powershell", "pwsh", "cmd", "keep")]
-    [string]$DefaultShell = "powershell"
+    [string]$DefaultShell = "powershell",
+    [switch]$Log,
+    [string]$LogFile = ""
 )
 
 ############################################
@@ -333,6 +338,29 @@ function Show-Summary {
 # 'irm | iex' runs in the caller's scope, so restore the preference afterwards.
 $previousErrorAction = $ErrorActionPreference
 $ErrorActionPreference = "Stop"
+
+# Optional logging (-Log / -LogFile). Off by default: with neither switch,
+# no transcript is started and the run behaves exactly as before.
+$logPath = ""
+if (-not [string]::IsNullOrWhiteSpace($LogFile)) {
+    $logPath = $LogFile
+} elseif ($Log) {
+    $logPath = Join-Path $env:TEMP ("setup-windows-ssh_{0}.log" -f (Get-Date -Format "yyyyMMdd_HHmmss"))
+}
+
+$transcriptStarted = $false
+if ($logPath -ne "") {
+    try {
+        $logDir = Split-Path -Path $logPath -Parent
+        if ($logDir -and -not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir -Force | Out-Null }
+        Start-Transcript -Path $logPath -Force | Out-Null
+        $transcriptStarted = $true
+        Write-Info "Logging this run to $logPath"
+    } catch {
+        Write-Warn ("Could not start logging ({0}). Continuing without a log file." -f $_.Exception.Message)
+    }
+}
+
 try {
     Test-Preconditions
     Install-OpenSshServer
@@ -345,4 +373,11 @@ try {
     Show-Summary
 } finally {
     $ErrorActionPreference = $previousErrorAction
+    # Always stop a transcript we started, so 'irm | iex' does not leave logging
+    # running in the caller's session.
+    if ($transcriptStarted) {
+        try { Stop-Transcript | Out-Null } catch { }
+        Write-Host ""
+        Write-Host "[INFO] Full log saved to: $logPath" -ForegroundColor Green
+    }
 }
