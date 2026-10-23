@@ -201,6 +201,8 @@ function Add-SshPublicKey {
     }
 
     if ($isAdminMember) {
+        $dir = Join-Path $env:ProgramData "ssh"
+        if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
         $file = Join-Path $env:ProgramData "ssh\administrators_authorized_keys"
     } else {
         $dir = Join-Path $env:USERPROFILE ".ssh"
