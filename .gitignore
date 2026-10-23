@@ -1,0 +1,3 @@
+# AI tooling / local operational state (do not publish to this public repo)
+.omc/
+.claude/
